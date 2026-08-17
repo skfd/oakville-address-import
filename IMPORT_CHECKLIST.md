@@ -12,9 +12,9 @@ a *tool* does it in bulk under your account.
 | gate | owner | status |
 |---|---|---|
 | **Licence** — ODbL compatibility of the Town of Oakville OGL, cleared with the OSM Licensing Working Group | **skfd** | in progress, not yours to chase |
-| **Street-name casing** — the source is UPPERCASE and the engine cannot fix it yet | you (code) | **blocking, item 2** |
-| **Import proposal** — plan, `imports@` announcement, dedicated account | you | items 7–9 |
-| **Is the gap even worth importing** | you | item 1 |
+| **Street-name casing** — the source is UPPERCASE and the engine cannot fix it yet | you (code) | **blocking — Phase 2, items 11–16** |
+| **Import proposal** — plan, `imports@` announcement, dedicated account | you | Phase 4, items 23–28 |
+| **Is the gap even worth importing** | you | item 8 |
 
 Two hard rules that override everything below:
 

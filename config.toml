@@ -52,7 +52,7 @@ sqlite_path = "../ontario-address-changes/data/oakville/oakville.db"
 # engine's expand_street_name() rewrites only the trailing suffix/direction
 # tokens and preserves earlier tokens verbatim, so it currently produces
 # "CAMEO Street" and "TRAFALGAR Road" — mixed-case garbage that must never
-# reach addr:street. See IMPORT_CHECKLIST.md item 2.
+# reach addr:street. See IMPORT_CHECKLIST.md Phase 2 (items 11-16).
 street_from = "street"
 
 # ADDRESS, the source's combined column. NOT the synthesized "number+street"
@@ -102,7 +102,7 @@ policy = "collapse-to-civic"
 
 [run_defaults]
 # Small first-run rectangle in downtown Oakville, around Lakeshore Rd E and
-# Trafalgar Rd. Keep first runs small — see IMPORT_CHECKLIST.md item 4.
+# Trafalgar Rd. Keep first runs small — see IMPORT_CHECKLIST.md Phase 3.
 bbox = [43.443, -79.673, 43.452, -79.660]
 overpass_url = "https://overpass-api.de/api/interpreter"
 
@@ -148,9 +148,10 @@ changeset_comment_template = "{city} Open Data address import, run={run_name}"
 [export]
 attribution = "Town of Oakville Open Data"
 # Deliberately empty, and the engine WILL refuse to upload while it is empty —
-# that is the intended gate. Fill it with the OSM wiki import-plan URL once the
-# plan is written and announced (IMPORT_CHECKLIST.md items 7-9). Do not fill it
-# to silence the error.
+# that is the intended gate — it blocks the API upload and the JOSM .osm export
+# alike (t2/osm_export.py:66). Fill it with the OSM wiki import-plan URL once
+# the plan is written and announced (IMPORT_CHECKLIST.md items 25-28). Do not
+# fill it to silence the error.
 import_plan = ""
 
 # Prior mapping activity in this city. NOT read by the engine ([prior_import]

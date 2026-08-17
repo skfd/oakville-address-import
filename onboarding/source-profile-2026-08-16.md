@@ -208,6 +208,6 @@ winning ward layer 99.87%). Raw output: `ward-coverage-2026-08-16.json`.
 - **The OSM-side gap.** The 2026-08-12 portfolio survey said 49,322 of 65,134
   missing (75.7%), but TronnaLegacy has been adding addresses since 2026-08-08.
   That number is stale by construction — **re-measure it**, do not quote it.
-  It is item 1 of `IMPORT_CHECKLIST.md`.
+  It is item 8 of `IMPORT_CHECKLIST.md`.
 - Gap distribution (500 m cells), provenance/last-touch editor tally: both need
   the Geofabrik extract downloaded first.

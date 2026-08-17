@@ -55,9 +55,9 @@ Full probe results, and the reasoning behind every setting in `config.toml`:
 **1. Street names are UPPERCASE and the engine cannot fix them yet.**
 The source publishes `CHANCERY LANE E` and `MCCRANEY ST E`; the current
 normalizer turns those into `CHANCERY LANE East` and `MCCRANEY Street`. 1,646
-of 1,647 distinct street names are affected. This is a code fix, it is
-item 2 of the checklist, and it blocks any upload — to dev as well, if you want
-the dev runs to mean anything.
+of 1,647 distinct street names are affected. This is a code fix, it is Phase 2
+of the checklist (items 11–16), and it blocks any upload — to dev as well, if
+you want the dev runs to mean anything.
 
 **2. Production upload is gated on a licence review you don't have to chase.**
 Oakville's Open Government Licence is a clean clone of OGL-Canada 2.0 and has
