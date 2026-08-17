@@ -51,11 +51,25 @@ Two hard rules that override everything below:
       (`python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`).
       Leave `.env.prod` alone for now — you cannot use it yet anyway.
 
-- [ ] **4.** Get the Oakville tracker DB. It is
-      `ontario-address-changes/data/oakville/oakville.db` (~32 MB), currently
-      only on skfd's machine — **ask him for it**, along with how it gets
-      refreshed. Everything downstream reads from it, so this is the one
-      dependency you cannot work around.
+- [ ] **4.** Get the Oakville tracker DB — everything downstream reads from it.
+      It is gitignored in `ontario-address-changes`, so it ships as a
+      pre-release asset here instead
+      ([`tracker-db-20260812`](https://github.com/skfd/oakville-address-import/releases/tag/tracker-db-20260812),
+      5.7 MB compressed, 32 MB on disk):
+
+      gh release download tracker-db-20260812 -R skfd/oakville-address-import
+      xz -d oakville-tracker-20260812.db.xz
+      mv oakville-tracker-20260812.db \
+         ../ontario-address-changes/data/oakville/oakville.db
+
+      That target path is what `config.toml` points at, relative to the engine
+      repo root.
+
+      It is snapshot 26 (pulled 2026-08-12): 71,049 active rows, 65,135 civic
+      addresses. **Marked pre-release on purpose** — the town's layer is live
+      and the tracker keeps pulling it, so this is a dated convenience copy for
+      getting started, not a stable artifact. Ask skfd how the tracker refreshes
+      before you rely on this file for anything wide.
 
 - [ ] **5.** Download the OSM extract (~600 MB–1 GB, once, shared across every
       city):

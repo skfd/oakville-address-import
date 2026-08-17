@@ -40,7 +40,9 @@ Town of Oakville **Address Points**, layer 15 of
 `maps.oakville.ca/oakgis/rest/services/ArcGISOnline/AGO_Oakville_Misc_Layers`,
 consumed through the sibling
 [`ontario-address-changes`](https://github.com/skfd/ontario-address-changes)
-tracker (`data/oakville/oakville.db`).
+tracker (`data/oakville/oakville.db`) — which ships here as the
+[`tracker-db-20260812`](https://github.com/skfd/oakville-address-import/releases/tag/tracker-db-20260812)
+pre-release, since the tracker gitignores its own data.
 
 **71,049 active rows** at snapshot 26 (2026-08-12) → **65,135 civic addresses**
 after collapsing the 5,896 unit rows. Tiles are built from the town's **7 ward
