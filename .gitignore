@@ -1,0 +1,11 @@
+.env
+.env.dev
+.env.prod
+data/
+logs/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.claude/*
+!.claude/commands/

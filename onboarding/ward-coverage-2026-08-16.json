@@ -1,0 +1,29 @@
+{
+  "probe": "polygon-fabric point-test",
+  "date": "2026-08-16",
+  "city": "oakville",
+  "layer": "https://maps.oakville.ca/oakgis/rest/services/ArcGISOnline/AGO_Oakville_Misc_Layers/MapServer/21",
+  "layer_name": "Wards",
+  "name_field": "WARD",
+  "polygons": 7,
+  "max_record_count": 1000,
+  "snapshot_id": 26,
+  "snapshot_date": "2026-08-12",
+  "points": 71049,
+  "inside": 71048,
+  "orphans": 1,
+  "coverage_pct": 99.9986,
+  "per_polygon": {
+    "1": 9444,
+    "2": 8966,
+    "3": 8292,
+    "4": 14222,
+    "5": 10241,
+    "6": 11092,
+    "7": 8791
+  },
+  "other_layers_seen": {
+    "16": "Municipal Boundary (1 polygon, boundary-clipping input)"
+  },
+  "note": "No neighbourhood/community/planning layer exists in this org; wards are the only fabric."
+}

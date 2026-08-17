@@ -1,0 +1,167 @@
+# Oakville city checkout — engine config.
+#
+# Every value below was measured against tracker snapshot 26 (2026-08-12,
+# 71,049 active rows) on 2026-08-16. Evidence and the reasoning behind each
+# non-obvious choice: onboarding/source-profile-2026-08-16.md.
+#
+# Read that file before changing anything here. Three of these settings are
+# not the obvious ones and each has a specific reason.
+
+[city]
+slug = "oakville"
+name = "Oakville"
+# Tile fabric: the town's own 7 ward polygons, layer 21 of the same MapServer
+# that publishes the address points. Probed 2026-08-16 per 04-city-onboarding.md:
+# point-test coverage 100.00% — 71,048 of 71,049 addresses fall inside a ward,
+# one orphan (the null-number row, which has no geometry worth placing). That is
+# the best coverage in the portfolio; Hamilton's 234 neighbourhoods scored
+# 99.99% and Guelph's 23 areas 99.47%.
+#
+# 7 polygons is coarse compared to Guelph's 23 — wards hold 8,292 to 14,222
+# addresses each — but the tile builder subdivides them, so coarse-but-total
+# beats fine-but-partial. Guelph rejected its 6-ward layer only because it had
+# a better 23-polygon option; Oakville has no neighbourhood layer at all.
+# 7 features fit one page under maxRecordCount = 1000.
+neighbourhoods_url = "https://maps.oakville.ca/oakgis/rest/services/ArcGISOnline/AGO_Oakville_Misc_Layers/MapServer/21/query?where=1%3D1&outFields=WARD&outSR=4326&f=geojson"
+# WARD holds "1".."7". FULL_NAME is the same string — either works; WARD is the
+# service's own displayFieldName.
+neighbourhood_name_field = "WARD"
+
+[source]
+# Relative to the ENGINE repo root, which is the working directory both for
+# `python run.py` and for every background job the web UI spawns (the app pins
+# subprocess cwd to the engine root). Assumes the standard sibling layout:
+#
+#   Code/
+#     address-importer-friend/     <- engine, run from here
+#     oakville-address-import/     <- this repo
+#     ontario-address-changes/     <- tracker
+#
+# If your checkouts live elsewhere, replace this with an absolute path. It is
+# passed to sqlite3 verbatim and is NOT resolved against this repo's directory.
+sqlite_path = "../ontario-address-changes/data/oakville/oakville.db"
+
+# Per-city projection recipe (multi-city Tier 2). Measured against snapshot 26.
+[source_fields]
+# SNAME — the full street name including type and direction ("CHANCERY LANE E").
+# Clean: no housenumber embedded, populated on all 71,049 rows.
+#
+# WARNING, and the single biggest thing to fix before uploading anything:
+# Oakville publishes street names in UPPERCASE and abbreviated. 1,646 of 1,647
+# distinct names are all-caps (the lone exception is "Maple Grove Dr"). The
+# engine's expand_street_name() rewrites only the trailing suffix/direction
+# tokens and preserves earlier tokens verbatim, so it currently produces
+# "CAMEO Street" and "TRAFALGAR Road" — mixed-case garbage that must never
+# reach addr:street. See IMPORT_CHECKLIST.md item 2.
+street_from = "street"
+
+# ADDRESS, the source's combined column. NOT the synthesized "number+street"
+# that Guelph uses, and the reason is number_from below — the engine rejects
+# number_from = "full" together with full_from = "number+street" as circular
+# (t2/config.py:147).
+#
+# Known cost of this choice: ADDRESS embeds the unit for the 5,896 unit rows
+# ("1135 MCCRANEY ST E UNIT 33"). That is the Guelph inflation trap
+# (08-survey-results-2026-08-12.md) — it inflates any DISTINCT count taken over
+# `full`. It should not affect candidates, because [units] collapse-to-civic
+# keys on (number, street, municipality), not on full. VERIFY THAT on the first
+# run rather than trusting this comment.
+full_from = "full"
+
+# The tracker's `number` column drops the housenumber suffix: 24 rows whose true
+# address is "335A LAKESHORE RD E" store number = "335" with SUFFIX = "A" in a
+# separate prop. Uploading addr:housenumber=335 for 335A would be wrong data AND
+# would collide with the real 335 next door.
+#
+# No single props key carries the combined form — LABEL looks like a candidate
+# but holds the UNIT on unit rows, not the number. Only ADDRESS has it, so the
+# number is parsed as the leading token of `full` (the Waterloo branch, which
+# yields "335A" here and "1135" for unit rows).
+number_from = "full"
+
+# Tracker canonical column (source UNIT), populated on 5,896 of 71,049 rows
+# (8.3%). Declaring it obliges the [units] policy below.
+unit = "unit"
+
+# Deliberately undeclared, all verified absent on snapshot 26:
+#   municipality — Oakville is single-tier, no municipality field exists.
+#   ward         — the ward polygons are a separate layer; address rows carry
+#                  no ward prop. Tiles get wards from [city], not from here.
+#   status       — no status/lifecycle field. Every row is live by construction,
+#                  so the [status] capability stays off (unlike Kitchener).
+#   postcode     — the source's POSTAL column is an empty schema slot: 0 of
+#                  71,049 rows populated, never present in any snapshot.
+#   address_class, lo_num/hi_num — absent, so suffix_range stays out of [checks]
+#                  (the engine refuses a config that enables it without them).
+
+# Same decision as Hamilton and Guelph (09-units.md option 2): one candidate per
+# civic address, unit-level import deferred. Measured 2026-08-16 on snapshot 26:
+# 71,049 rows -> 65,135 distinct (number, street) civic groups.
+[units]
+policy = "collapse-to-civic"
+
+[run_defaults]
+# Small first-run rectangle in downtown Oakville, around Lakeshore Rd E and
+# Trafalgar Rd. Keep first runs small — see IMPORT_CHECKLIST.md item 4.
+bbox = [43.443, -79.673, 43.452, -79.660]
+overpass_url = "https://overpass-api.de/api/interpreter"
+
+[osm]
+source = "local"
+# Same Ontario PBF as every city in the portfolio (~1 GB download, shared).
+pbf_url = "https://download.geofabrik.de/north-america/canada/ontario-latest.osm.pbf"
+# Source-data extent measured 2026-08-16 (71,049 rows: lat 43.37207..43.5237,
+# lon -79.8097..-79.62587) plus a margin. Oakville is a lower-tier municipality
+# of Halton Region, so this rectangle inevitably catches Burlington, Milton and
+# Mississauga addresses in the corners — Burlington and Mississauga are separate
+# datasets in the portfolio. See 10-boundary-clipping.md; layer 16 of the same
+# MapServer publishes the Municipal Boundary polygon when clipping lands.
+city_bbox = [43.36, -79.83, 43.54, -79.60]
+extract_dir = "data/osm"
+
+[conflation]
+match_radius_m = 100
+match_near_m = 15
+
+[checks]
+match_far = true
+city_duplicate = true
+missing_sample = true
+nearby_street_mismatch = true
+
+[check_params.city_duplicate]
+radius_m = 3.0
+
+[check_params.missing_sample]
+every_nth = 50
+
+[check_params.nearby_street_mismatch]
+radius_m = 20.0
+
+[check_params.match_number_drift]
+slack_m = 2.0
+
+[upload]
+changesets_per_minute = 1
+changeset_comment_template = "{city} Open Data address import, run={run_name}"
+
+[export]
+attribution = "Town of Oakville Open Data"
+# Deliberately empty, and the engine WILL refuse to upload while it is empty —
+# that is the intended gate. Fill it with the OSM wiki import-plan URL once the
+# plan is written and announced (IMPORT_CHECKLIST.md items 7-9). Do not fill it
+# to silence the error.
+import_plan = ""
+
+# Prior mapping activity in this city. NOT read by the engine ([prior_import]
+# is proposed, not implemented — 05-prior-import-detection.md) — kept as the
+# record of what any upload here has to stay consistent with.
+[prior_import]
+importer = "TronnaLegacy"
+method = "MapRoulette challenge 55881, manual entry"
+first_seen = "2026-08-08"
+source_name = "Oakville Address Points"
+source_license = "Open Government Licence - Town of Oakville"
+# The source tag TronnaLegacy's changesets carry. Match it or supersede it
+# deliberately; do not silently diverge.
+changeset_source = "Esri World Imagery; Oakville Address Points (Open Government Licence - Town of Oakville)"
