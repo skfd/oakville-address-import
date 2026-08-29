@@ -12,7 +12,7 @@ a *tool* does it in bulk under your account.
 | gate | owner | status |
 |---|---|---|
 | **Licence** — ODbL compatibility of the Town of Oakville OGL, cleared with the OSM Licensing Working Group | **skfd** | in progress, not yours to chase |
-| **Street-name casing** — the source is UPPERCASE and the engine cannot fix it yet | you (code) | **blocking — Phase 2, items 11–16** |
+| **Street-name casing** — the source is UPPERCASE | ~~you (code)~~ **skfd, done 2026-08-29** | **unblocked** — the engine title-cases on export; Phase 2 items 13–16 are still yours |
 | **Import proposal** — plan, `imports@` announcement, dedicated account | you | Phase 4, items 23–28 |
 | **Is the gap even worth importing** | you | item 8 |
 
@@ -127,20 +127,28 @@ title-cased, and it only rewrites the trailing suffix and direction tokens.
 1,646 of 1,647 distinct Oakville street names are affected. **Every uploaded
 `addr:street` would be wrong.**
 
-- [ ] **11.** Write a title-casing step for source street names, applied before
-      `expand_street_name()`. Do **not** use Python's `str.title()` — it breaks
-      `STILL'S LANE` → `Still'S Lane` and `MCCRANEY` → `Mccraney`. The classes
-      that occur in this dataset, with counts and examples, are tabulated in the
-      source profile: apostrophe-S, `O'`, `Mc`, `Mac`, `ST.` for Saint, leading
-      `THE`, and numeric names like `REGIONAL ROAD 25`.
+- [x] **11. Done 2026-08-29 — you do not have to write this.** The engine has
+      a title-casing step: `[export] street_case = "title"`, already declared in
+      your `config.toml`. It runs on the export path only, in the one tag
+      builder the review preview and the changeset both read, so `street_raw`
+      keeps the source's UPPERCASE spelling and nothing about conflation moves.
+      It is not `str.title()`: `STILL'S LANE` comes out `Still's Lane` and
+      `MCCRANEY ST E` comes out `McCraney Street East`. Pull the engine repo.
 
-- [ ] **12.** Add the type tokens the source spells out to the expansion table,
-      or make the title-caser handle them: `LANE` (86 streets), `TRAIL` (49),
-      `GATE` (40), `COMMON` (35), `WAY` (62), `LINE`. They currently pass
-      through untouched and stay uppercase.
+- [x] **12. Done by the same step.** `LANE`, `TRAIL`, `GATE`, `COMMON`, `WAY`
+      and `LINE` were already the long form — the problem was only that they
+      stayed uppercase, and they no longer do ("SIXTH LINE" → "Sixth Line").
+      Nothing needs adding to the expansion table.
 
 - [ ] **13.** **Settle the ambiguous forms against OSM, not against a rule.**
-      `MacDonald` vs `Macdonald`, `St. Ann's` vs `Saint Ann's` — Oakville
+      Still yours, and now narrowed to exactly what the caser refuses to guess.
+      It leaves `Mac` alone on purpose — `MACDONALD RD` comes out
+      `Macdonald Road`, `MACLENNAN DR` comes out `Maclennan Drive` — because
+      OSM writes Mac both ways (16 distinct names capitalize it, 20 do not, and
+      the 20 include words like Macaulay where a capital would be wrong). `Mc`
+      is not ambiguous and is handled. Acronyms cannot be recovered from an
+      all-caps source at all. So: `MacDonald` vs `Macdonald`,
+      `St. Ann's` vs `Saint Ann's` — Oakville
       already has thousands of mapped streets, many touched by you. The engine's
       `/streets` page diffs normalized source names against OSM's `name` values;
       use it, and prefer what is already on the ground. Where the source is
@@ -150,7 +158,10 @@ title-cased, and it only rewrites the trailing suffix and direction tokens.
 
 - [ ] **14.** Verify against all 1,647 distinct names before running anything
       wide. A test over the full list is cheap and this is the one error class
-      that would be spread across tens of thousands of objects.
+      that would be spread across tens of thousands of objects. **Half done:**
+      the sweep was run on 2026-08-29 and no all-caps word survives any of the
+      1,647 — but that only proves nothing shouts, not that every name is the
+      one on the ground, which is item 13 and needs your local knowledge.
 
 - [ ] **15.** **Verify the housenumber suffixes survive.** 24 addresses are
       `335A LAKESHORE RD E`-style. The config already routes around the

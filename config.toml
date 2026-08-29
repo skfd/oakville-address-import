@@ -46,13 +46,16 @@ sqlite_path = "../ontario-address-changes/data/oakville/oakville.db"
 # SNAME — the full street name including type and direction ("CHANCERY LANE E").
 # Clean: no housenumber embedded, populated on all 71,049 rows.
 #
-# WARNING, and the single biggest thing to fix before uploading anything:
 # Oakville publishes street names in UPPERCASE and abbreviated. 1,646 of 1,647
 # distinct names are all-caps (the lone exception is "Maple Grove Dr"). The
 # engine's expand_street_name() rewrites only the trailing suffix/direction
-# tokens and preserves earlier tokens verbatim, so it currently produces
+# tokens and preserves earlier tokens verbatim, so on its own it produces
 # "CAMEO Street" and "TRAFALGAR Road" — mixed-case garbage that must never
-# reach addr:street. See IMPORT_CHECKLIST.md Phase 2 (items 11-16).
+# reach addr:street.
+#
+# FIXED 2026-08-29, engine-side: [export] street_case = "title" below. This was
+# the blocking gate on IMPORT_CHECKLIST.md Phase 2; items 11 and 12 are done
+# and 13-16 (the ambiguous forms, and the two verifications) are still yours.
 street_from = "street"
 
 # ADDRESS, the source's combined column. NOT the synthesized "number+street"
@@ -153,6 +156,22 @@ attribution = "Town of Oakville Open Data"
 # the plan is written and announced (IMPORT_CHECKLIST.md items 25-28). Do not
 # fill it to silence the error.
 import_plan = ""
+
+# Title-case addr:street on the way out: "MCCRANEY ST E" -> "McCraney Street
+# East". Export path only — the stored street_raw keeps the source's own
+# UPPERCASE spelling and conflation is unaffected either way, so this could be
+# switched on for a city that had already conflated, and can be corrected later
+# without re-ingesting.
+#
+# Swept over all 1,647 distinct Oakville street names 2026-08-29: no all-caps
+# word survives the step. Two things it deliberately does NOT decide for you,
+# both checklist item 13: "MACDONALD RD" comes out "Macdonald Road" and
+# "MACLENNAN DR" comes out "Maclennan Drive", because OSM spells Mac both ways
+# and no rule separates MacGregor from Macaulay ("Mc" is not ambiguous and is
+# handled — "MCCRANEY" -> "McCraney"). And an acronym cannot be recovered from
+# an all-caps source at all. Where the names on the ground disagree, put them
+# in a [streets] overrides block, which is what it is for.
+street_case = "title"
 
 # Prior mapping activity in this city. NOT read by the engine ([prior_import]
 # is proposed, not implemented — 05-prior-import-detection.md) — kept as the
