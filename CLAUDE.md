@@ -67,8 +67,9 @@ These have already cost investigation once. Do not rediscover them.
    not 71,049.
 
 5. **`[export] import_plan` is empty on purpose** and the engine refuses to
-   upload while it is. That is the gate holding production until the licence
-   review and the import proposal are done. Do not fill it, suggest filling it,
+   upload while it is. That is the gate holding production until the import
+   proposal is done (the licence review closed 2026-09-14 and does not touch
+   this field). Do not fill it, suggest filling it,
    or work around it to make an error go away. If a user hits that error, the
    correct response is to explain the gate.
 

@@ -11,7 +11,7 @@ a *tool* does it in bulk under your account.
 
 | gate | owner | status |
 |---|---|---|
-| **Licence** — ODbL compatibility of the Town of Oakville OGL, cleared with the OSM Licensing Working Group | **skfd** | in progress, not yours to chase |
+| **Licence** — ODbL compatibility of the Town of Oakville OGL, cleared with the OSM Licensing Working Group | **skfd** | ~~in progress, not yours to chase~~ **closed 2026-09-14** — LWG lists it as compatible on [OGL Canada and local variants](https://osmfoundation.org/wiki/OGL_Canada_and_local_variants) |
 | **Street-name casing** — the source is UPPERCASE | ~~you (code)~~ **skfd, done 2026-08-29** | **unblocked** — the engine title-cases on export; Phase 2 items 13–16 are still yours |
 | **Import proposal** — plan, `imports@` announcement, dedicated account | you | Phase 4, items 23–28 |
 | **Is the gap even worth importing** | you | item 8 |
@@ -19,14 +19,16 @@ a *tool* does it in bulk under your account.
 Two hard rules that override everything below:
 
 1. **Nothing goes to the production OSM server until both the licence gate and
-   the import-proposal gate are closed.** Dev-server runs are unlimited and
-   invisible — use them freely.
+   the import-proposal gate are closed.** (The licence gate closed 2026-09-14;
+   the import-proposal gate is the one still open.) Dev-server runs are
+   unlimited and invisible — use them freely.
 2. **`[export] import_plan` in `config.toml` is deliberately empty, and the
    engine refuses to build changeset tags while it is.** That blocks both the
    tool's own upload *and* the JOSM `.osm` export — `changeset_tags()` raises
    either way (`t2/osm_export.py:66`), so there is no accidental side door.
    Fill it with your wiki plan URL when you have one; never fill it just to
-   make the error go away.
+   make the error go away. It is the import-proposal gate's lock, not the
+   licence's — the licence gate closing did not change it.
 
 ---
 
@@ -253,8 +255,8 @@ irreversibility.
 
 ## Phase 5 — Production
 
-Do not start this phase until: **licence gate closed (skfd confirms)** and
-**items 24–28 complete**.
+Do not start this phase until: ~~**licence gate closed (skfd confirms)**~~
+**skfd confirms, closed 2026-09-14** and **items 24–28 complete**.
 
 - [ ] **29.** Register a second OAuth2 app on `openstreetmap.org` (production
       has its own registry) and fill `.env.prod` — separate `FLASK_SECRET_KEY`

@@ -61,21 +61,33 @@ of 1,647 distinct street names are affected. This is a code fix, it is Phase 2
 of the checklist (items 11–16), and it blocks any upload — to dev as well, if
 you want the dev runs to mean anything.
 
-**2. Production upload is gated on a licence review you don't have to chase.**
-Oakville's Open Government Licence is a clean clone of OGL-Canada 2.0 and has
-been verified as ODbL-compatible on a desk review, but the confirmation from
-the OSM Licensing Working Group is still outstanding. **skfd owns that.** The
-dev sandbox is unaffected — run there as much as you like.
+**2. Production upload is gated on your import proposal; the licence review is done.**
+Oakville's Open Government Licence is a clean clone of OGL-Canada 2.0, and the
+OSM Licensing Working Group has now confirmed it: the OSMF page
+[OGL Canada and local variants](https://osmfoundation.org/wiki/OGL_Canada_and_local_variants)
+lists the town's licence as compatible (LWG minutes 2026-09-14). It is named
+there "Town of Oakville Open Data Licence"; the PDF it links is titled "Open
+Government Licence – Town of Oakville" — the same licence the address dataset
+is published under, not a different document. **Licence gate closed
+2026-09-14.** The dev sandbox was never affected — run there as much as you
+like.
 
-The engine enforces this with a real mechanism rather than a comment:
-`[export] import_plan` in `config.toml` is empty, and changeset-tag
-construction raises while it is — which blocks the tool's own upload and the
-JOSM `.osm` export alike, so there is no accidental side door.
+What still holds production is the import proposal, and that one is yours
+(Phase 4 of the checklist). The engine enforces it with a real mechanism
+rather than a comment: `[export] import_plan` in `config.toml` is empty, and
+changeset-tag construction raises while it is — which blocks the tool's own
+upload and the JOSM `.osm` export alike, so there is no accidental side door.
+That field is the import-proposal gate's lock, not the licence's: the licence
+closing did not change it. It stays empty until checklist item 28.
 
 ## Status of the surrounding work
 
-- The town's licence sits in a drafted (unsent) letter to the OSM Licensing
-  Working Group covering six Ontario OGL clones. skfd is handling it.
+- ~~The town's licence sits in a drafted (unsent) letter to the OSM Licensing
+  Working Group covering six Ontario OGL clones.~~ The letter was never sent
+  and did not need to be: the LWG approved Oakville's licence on 2026-09-14 on
+  its own (see §2 above). The OSM wiki's
+  [Canada#Open_Data](https://wiki.openstreetmap.org/wiki/Canada#Open_Data)
+  table still lists Oakville as not accepted; that row lags the OSMF page.
 - A **hosted instance** of the review UI — so you can run all of this from a
   browser instead of a local Python install, signing in with your own OSM
   account — is designed but not built:
