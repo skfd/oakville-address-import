@@ -82,10 +82,14 @@ closing did not change it. It stays empty until checklist item 28.
 
 ## Status of the surrounding work
 
-- ~~The town's licence sits in a drafted (unsent) letter to the OSM Licensing
-  Working Group covering six Ontario OGL clones.~~ The letter was never sent
-  and did not need to be: the LWG approved Oakville's licence on 2026-09-14 on
-  its own (see §2 above). The OSM wiki's
+- ~~The town's licence sits in a drafted letter to the OSM Licensing Working
+  Group covering six Ontario OGL clones.~~ The letter was sent (date not
+  recorded; no reply as of 2026-10-11). Separately, on 2026-08-31 you added
+  Oakville to the OSM wiki
+  [Contributors](https://wiki.openstreetmap.org/wiki/Contributors) page,
+  following the self-service procedure on the OSMF variants page. The LWG then
+  listed the licence as compatible on 2026-09-14 (see §2 above); which message
+  prompted that is not known. The OSM wiki's
   [Canada#Open_Data](https://wiki.openstreetmap.org/wiki/Canada#Open_Data)
   table still lists Oakville as not accepted; that row lags the OSMF page.
 - A **hosted instance** of the review UI — so you can run all of this from a
